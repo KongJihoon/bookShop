@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode {
 
+    INVALID_INPUT(HttpStatus.BAD_REQUEST, "잘못된 입력입니다."),
+    INVALID_PATTERN(HttpStatus.BAD_REQUEST, "잘못된 패턴입니다."),
+    PAST_BIRTHDAY(HttpStatus.BAD_REQUEST, "과거 날짜를 입력해주세요."),
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "사용자를 찾을 수 없습니다."),
     EXISTS_BY_EMAIL(HttpStatus.BAD_REQUEST, "이미 사용중인 이메일입니다."),
     EXISTS_BY_LOGIN_ID(HttpStatus.BAD_REQUEST, "이미 사용중인 아이디입니다."),

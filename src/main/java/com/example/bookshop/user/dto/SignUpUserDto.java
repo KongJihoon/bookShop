@@ -39,7 +39,7 @@ public class SignUpUserDto {
         private String nickname;
 
         @JsonFormat(shape = JsonFormat.Shape.STRING
-                , pattern = "yyyyMMdd"
+                , pattern = "yyyy-MM-dd"
                 , timezone = "Asia/Seoul")
         private LocalDate birth;
 
@@ -50,7 +50,6 @@ public class SignUpUserDto {
         @NotBlank(message = "주소를 입력해주세요.")
         private String address;
 
-        private String userType;
 
         public static UserEntity toEntity(Request request) {
 
