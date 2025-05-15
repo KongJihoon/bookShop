@@ -34,14 +34,14 @@ class UserServiceImplTest {
     void signUpUser() {
         // given
         SignUpUserDto.Request request = SignUpUserDto.Request.builder()
-                .loginId("xxxx")
-                .password("xxxx@12")
-                .checkPassword("xxxx@12")
-                .email("xxxx@naver.com")
+                .loginId("")
+                .password("")
+                .checkPassword("")
+                .email("")
                 .nickname("xx")
-                .birth(LocalDate.parse("yyyy-MM-dd"))
-                .phone("010-1111-1111")
-                .address("xx")
+                .birth(LocalDate.parse(""))
+                .phone("")
+                .address("")
                 .build();
 
 
@@ -56,15 +56,15 @@ class UserServiceImplTest {
     @DisplayName("User_SignUp_Fail_중복_이메일")
     void signUpFail_duplicateEmail() {
         // given
-      SignUpUserDto.Request request = SignUpUserDto.Request.builder()
-                .loginId("xxxx")
-                .password("xxxx@12")
-                .checkPassword("xxxx@12")
-                .email("xxxx@naver.com")
+     SignUpUserDto.Request request = SignUpUserDto.Request.builder()
+                .loginId("")
+                .password("")
+                .checkPassword("")
+                .email("")
                 .nickname("xx")
-                .birth(LocalDate.parse("yyyy-MM-dd"))
-                .phone("010-1111-1111")
-                .address("xx")
+                .birth(LocalDate.parse(""))
+                .phone("")
+                .address("")
                 .build();
 
         // 1차 회원가입 → 정상 가입
