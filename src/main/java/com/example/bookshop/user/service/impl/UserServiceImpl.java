@@ -26,28 +26,14 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public ResultDto<SignUpUserDto.Response> signUpUser(SignUpUserDto.Request request) {
 
+
+        validationUserInfo(request);
+
         if (!request.getPassword().equals(request.getCheckPassword())) {
             throw new CustomException(PASSWORD_MISMATCH);
         }
 
         request.setPassword(passwordEncoder.encode(request.getPassword()));
-
-        boolean byEmail = userRepository.existsByEmail(request.getEmail());
-
-        boolean byLoginId = userRepository.existsByLoginId(request.getLoginId());
-
-        boolean byNickname = userRepository.existsByNickname(request.getNickname());
-
-        if (byEmail) {
-            throw new CustomException(EXISTS_BY_EMAIL);
-        }
-
-        if (byLoginId) {
-            throw new CustomException(EXISTS_BY_LOGIN_ID);
-        }
-        if (byNickname) {
-            throw new CustomException(EXISTS_BY_NICKNAME);
-        }
 
         UserEntity user = userRepository.save(SignUpUserDto.Request.toEntity(request));
 
@@ -56,4 +42,20 @@ public class UserServiceImpl implements UserService {
 
         return ResultDto.of("회원가입에 성공하였습니다.", SignUpUserDto.Response.fromDto(UserDto.fromEntity(user)));
     }
+
+    private void validationUserInfo(SignUpUserDto.Request request) {
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new CustomException(EXISTS_BY_EMAIL);
+        }
+
+        if (userRepository.existsByLoginId(request.getLoginId())) {
+            throw new CustomException(EXISTS_BY_LOGIN_ID);
+        }
+        if (userRepository.existsByNickname(request.getNickname())) {
+            throw new CustomException(EXISTS_BY_NICKNAME);
+        }
+    }
+
+
 }

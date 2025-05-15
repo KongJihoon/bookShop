@@ -16,6 +16,7 @@ public class SignUpUserDto {
     @Getter
     @AllArgsConstructor
     @Setter
+    @Builder
     public static class Request {
 
         @NotBlank(message = "아이디를 입력해주세요.")
