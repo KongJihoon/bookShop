@@ -15,7 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 
 import static com.example.bookshop.global.exception.ErrorCode.EXISTS_BY_EMAIL;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
@@ -34,14 +35,14 @@ class UserServiceImplTest {
     void signUpUser() {
         // given
         SignUpUserDto.Request request = SignUpUserDto.Request.builder()
-                .loginId("rwg1279")
-                .password("rhdwlgns@12")
-                .checkPassword("rhdwlgns@12")
-                .email("rwg1279@naver.com")
-                .nickname("JI")
-                .birth(LocalDate.parse("1997-07-24"))
-                .phone("010-4599-1719")
-                .address("인천")
+                .loginId("")
+                .password("")
+                .checkPassword("")
+                .email("")
+                .nickname("")
+                .birth(LocalDate.parse(""))
+                .phone("")
+                .address("")
                 .build();
 
 
@@ -57,14 +58,14 @@ class UserServiceImplTest {
     void signUpFail_duplicateEmail() {
         // given
         SignUpUserDto.Request request = SignUpUserDto.Request.builder()
-                .loginId("user1")
-                .password("Test1234!@")
-                .checkPassword("Test1234!@")
-                .email("duplicate@naver.com")
-                .nickname("nick1")
-                .birth(LocalDate.parse("1997-07-24"))
-                .phone("010-1234-5678")
-                .address("서울")
+                .loginId("")
+                .password("")
+                .checkPassword("")
+                .email("")
+                .nickname("")
+                .birth(LocalDate.parse(""))
+                .phone("")
+                .address("")
                 .build();
 
         // 1차 회원가입 → 정상 가입
