@@ -33,12 +33,12 @@ class UserServiceImplTest {
     @DisplayName("User_SignUp_Success")
     void signUpUser() {
         // given
-        SignUpUserDto.Request request = SignUpUserDto.Request.builder()
+ SignUpUserDto.Request request = SignUpUserDto.Request.builder()
                 .loginId("")
                 .password("")
                 .checkPassword("")
                 .email("")
-                .nickname("xx")
+                .nickname("")
                 .birth(LocalDate.parse(""))
                 .phone("")
                 .address("")
@@ -61,7 +61,7 @@ class UserServiceImplTest {
                 .password("")
                 .checkPassword("")
                 .email("")
-                .nickname("xx")
+                .nickname("")
                 .birth(LocalDate.parse(""))
                 .phone("")
                 .address("")
