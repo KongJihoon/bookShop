@@ -15,8 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 
 import static com.example.bookshop.global.exception.ErrorCode.EXISTS_BY_EMAIL;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -34,7 +33,7 @@ class UserServiceImplTest {
     @DisplayName("User_SignUp_Success")
     void signUpUser() {
         // given
-        SignUpUserDto.Request request = SignUpUserDto.Request.builder()
+ SignUpUserDto.Request request = SignUpUserDto.Request.builder()
                 .loginId("")
                 .password("")
                 .checkPassword("")
@@ -57,7 +56,7 @@ class UserServiceImplTest {
     @DisplayName("User_SignUp_Fail_중복_이메일")
     void signUpFail_duplicateEmail() {
         // given
-        SignUpUserDto.Request request = SignUpUserDto.Request.builder()
+     SignUpUserDto.Request request = SignUpUserDto.Request.builder()
                 .loginId("")
                 .password("")
                 .checkPassword("")
