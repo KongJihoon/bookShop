@@ -33,15 +33,16 @@ class UserServiceImplTest {
     @DisplayName("User_SignUp_Success")
     void signUpUser() {
         // given
-        SignUpUserDto.Request request = SignUpUserDto.Request.builder()
-                .loginId("xxxxx")
-                .password("xxxxxx@12")
-                .checkPassword("xxxxxx@12")
-                .email("xxxxx@naver.com")
-                .nickname("xxx")
-                .birth(LocalDate.parse("yyyy-MM-dd"))
-                .phone("010-1111-1111")
-                .address("11")
+
+ SignUpUserDto.Request request = SignUpUserDto.Request.builder()
+                .loginId("")
+                .password("")
+                .checkPassword("")
+                .email("")
+                .nickname("")
+                .birth(LocalDate.parse(""))
+                .phone("")
+                .address("")
                 .build();
 
 
@@ -56,15 +57,16 @@ class UserServiceImplTest {
     @DisplayName("User_SignUp_Fail_중복_이메일")
     void signUpFail_duplicateEmail() {
         // given
-        SignUpUserDto.Request request = SignUpUserDto.Request.builder()
-                .loginId("xxxxx")
-                .password("xxxxxx@12")
-                .checkPassword("xxxxxx@12")
-                .email("xxxxx@naver.com")
-                .nickname("xxx")
-                .birth(LocalDate.parse("yyyy-MM-dd"))
-                .phone("010-1111-1111")
-                .address("11")
+
+     SignUpUserDto.Request request = SignUpUserDto.Request.builder()
+                .loginId("")
+                .password("")
+                .checkPassword("")
+                .email("")
+                .nickname("")
+                .birth(LocalDate.parse(""))
+                .phone("")
+                .address("")
                 .build();
 
         // 1차 회원가입 → 정상 가입

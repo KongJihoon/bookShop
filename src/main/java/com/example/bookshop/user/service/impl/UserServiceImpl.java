@@ -1,5 +1,6 @@
 package com.example.bookshop.user.service.impl;
 
+import com.example.bookshop.global.dto.CheckDto;
 import com.example.bookshop.global.dto.ResultDto;
 import com.example.bookshop.global.exception.CustomException;
 import com.example.bookshop.user.dto.SignUpUserDto;
@@ -41,6 +42,22 @@ public class UserServiceImpl implements UserService {
 
 
         return ResultDto.of("회원가입에 성공하였습니다.", SignUpUserDto.Response.fromDto(UserDto.fromEntity(user)));
+    }
+
+    @Override
+    @Transactional
+    public CheckDto checkEmail(String email) {
+
+        boolean exists = userRepository.existsByEmail(email);
+
+        if (exists) {
+            throw new CustomException(EXISTS_BY_EMAIL);
+        }
+
+        return CheckDto.builder()
+                .success(true)
+                .message("사용가능한 이메일 입니다.").build();
+
     }
 
     private void validationUserInfo(SignUpUserDto.Request request) {
