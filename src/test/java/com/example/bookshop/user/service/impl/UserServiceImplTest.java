@@ -33,6 +33,7 @@ class UserServiceImplTest {
     @DisplayName("User_SignUp_Success")
     void signUpUser() {
         // given
+
  SignUpUserDto.Request request = SignUpUserDto.Request.builder()
                 .loginId("")
                 .password("")
@@ -56,6 +57,7 @@ class UserServiceImplTest {
     @DisplayName("User_SignUp_Fail_중복_이메일")
     void signUpFail_duplicateEmail() {
         // given
+
      SignUpUserDto.Request request = SignUpUserDto.Request.builder()
                 .loginId("")
                 .password("")
