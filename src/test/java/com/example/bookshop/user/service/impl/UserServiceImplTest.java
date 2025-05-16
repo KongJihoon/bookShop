@@ -1,10 +1,14 @@
 package com.example.bookshop.user.service.impl;
 
+import com.example.bookshop.global.dto.CheckDto;
 import com.example.bookshop.global.dto.ResultDto;
 import com.example.bookshop.global.exception.CustomException;
+import com.example.bookshop.global.service.MailService;
+import com.example.bookshop.global.service.RedisService;
 import com.example.bookshop.user.dto.SignUpUserDto;
 import com.example.bookshop.user.repository.UserRepository;
 import com.example.bookshop.user.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +31,34 @@ class UserServiceImplTest {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    private RedisService redisService;
+
+    @BeforeEach
+    void setUp() {
+
+        if (!userRepository.existsByEmail("test@example.com")) {
+
+
+            SignUpUserDto.Request build = SignUpUserDto.Request.builder()
+                    .loginId("testuser")
+                    .password("1111@11")
+                    .checkPassword("1111@11")
+                    .email("test@example.com")
+                    .nickname("testuser")
+                    .birth(LocalDate.parse("1997-07-24"))
+                    .phone("010-1111-1111")
+                    .address("테스트 주소")
+                    .build();
+            userService.signUpUser(build);
+
+        }
+
+    }
 
 
     @Test
@@ -81,6 +113,28 @@ class UserServiceImplTest {
         assertEquals(EXISTS_BY_EMAIL.getMessage(), exception.getMessage());
     }
 
+    @Test
+    @DisplayName("이메일 인증번호 전송")
+    void sendAuthMail() {
+        // given
+
+        String email = "test@example.com";
+
+
+        // when
+
+        CheckDto checkDto = mailService.sendAuthMail(email);
+
+        String code = redisService.getData("Email-Auth: " + email);
+
+        // then
+
+
+        assertNotNull(checkDto);
+        assertTrue(checkDto.isSuccess());
+        assertEquals("인증번호를 전송하였습니다.", checkDto.getMessage());
+
+    }
 
 
 
