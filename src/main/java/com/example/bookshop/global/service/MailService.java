@@ -68,7 +68,7 @@ public class MailService {
             mimeMessageHelper.setText(msg, true);
 
             javaMailSender.send(mimeMessage);
-            redisService.setDataExpire(EMAIL_PREFIX + email, code, EMAIL_TOKEN_EXPIRE);
+            redisService.setDataExpireMinutes(EMAIL_PREFIX + email, code, EMAIL_TOKEN_EXPIRE);
 
         } catch (MessagingException e) {
 

@@ -1,11 +1,16 @@
 package com.example.bookshop.user.service.impl;
 
+import com.example.bookshop.auth.dto.TokenDto;
+import com.example.bookshop.auth.service.AuthService;
 import com.example.bookshop.global.dto.CheckDto;
 import com.example.bookshop.global.dto.ResultDto;
 import com.example.bookshop.global.exception.CustomException;
+import com.example.bookshop.global.security.TokenProvider;
 import com.example.bookshop.global.service.MailService;
 import com.example.bookshop.global.service.RedisService;
 import com.example.bookshop.user.dto.SignUpUserDto;
+import com.example.bookshop.user.dto.UserDto;
+import com.example.bookshop.user.entity.UserEntity;
 import com.example.bookshop.user.repository.UserRepository;
 import com.example.bookshop.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.concurrent.TimeUnit;
 
 import static com.example.bookshop.global.exception.ErrorCode.EXISTS_BY_EMAIL;
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,6 +44,12 @@ class UserServiceImplTest {
     @Autowired
     private RedisService redisService;
 
+    @Autowired
+    private AuthService authService;
+
+    @Autowired
+    private TokenProvider tokenProvider;
+
     @BeforeEach
     void setUp() {
 
@@ -50,11 +62,17 @@ class UserServiceImplTest {
                     .checkPassword("1111@11")
                     .email("test@example.com")
                     .nickname("testuser")
-                    .birth(LocalDate.parse("1997-07-24"))
+                    .birth(LocalDate.parse("2000-01-01"))
                     .phone("010-1111-1111")
                     .address("테스트 주소")
                     .build();
+
+
             userService.signUpUser(build);
+
+            UserEntity user = userRepository.findByLoginId("testuser").orElseThrow();
+            user.setEmailAuth();
+            userRepository.save(user);
 
         }
 
@@ -135,6 +153,47 @@ class UserServiceImplTest {
         assertEquals("인증번호를 전송하였습니다.", checkDto.getMessage());
 
     }
+
+
+    @Test
+    @DisplayName("로그인 유저")
+    void loginUser() {
+        // given
+
+        UserDto userDto = authService.LoginUser("testuser", "1111@11");
+
+
+        // when
+        TokenDto token = authService.getToken(userDto);
+
+
+        // then
+
+        assertNotNull(token.getAccessToken());
+        assertNotNull(token.getRefreshToken());
+
+
+        assertEquals(tokenProvider.getUsernameFromToken(token.getAccessToken()), "testuser");
+        assertEquals(redisService.getData("refresh_token:" + userDto.getLoginId()), token.getRefreshToken());
+
+    }
+
+    @Test
+    @DisplayName("RefreshToken TTL 확인")
+    void refreshTokenTTLTest() {
+
+        // given
+
+        UserDto userDto = authService.LoginUser("testuser", "1111@11");
+
+
+        // when
+        TokenDto token = authService.getToken(userDto);
+        String key = "refresh_token:" + userDto.getLoginId();
+        Long ttl = redisService.getExpire(key, TimeUnit.MILLISECONDS);
+        assertTrue(ttl > 0 && ttl <= 3600000); // 1시간 이내
+    }
+
 
 
 

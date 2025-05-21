@@ -7,6 +7,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -16,13 +17,23 @@ public class RedisService {
     private final RedisTemplate<String, String> redisTemplate;
 
 
-    public void setDataExpire(String key, String value, Long expiredTime) {
+    public void setDataExpireMinutes(String key, String value, Long expiredTime) {
 
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
 
         valueOperations.set(key, value, Duration.ofMinutes(expiredTime));
 
     }
+
+    public void setDataExpireMillis(String key, String value, Long expiredTime) {
+
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+
+        valueOperations.set(key, value, Duration.ofMillis(expiredTime));
+
+    }
+
+
 
     public String getData(String key) {
 
@@ -36,6 +47,14 @@ public class RedisService {
 
         redisTemplate.delete(key);
 
+    }
+
+    public Long getExpire(String key, TimeUnit milliseconds) {
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+
+        Long expire = valueOperations.getOperations().getExpire(key, TimeUnit.MILLISECONDS);
+
+        return expire;
     }
 
 }
