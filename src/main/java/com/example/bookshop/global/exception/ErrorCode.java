@@ -19,6 +19,7 @@ public enum ErrorCode {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
 
+
     INVALID_INPUT(HttpStatus.BAD_REQUEST, "잘못된 입력입니다."),
     INVALID_PATTERN(HttpStatus.BAD_REQUEST, "잘못된 패턴입니다."),
     PAST_BIRTHDAY(HttpStatus.BAD_REQUEST, "과거 날짜를 입력해주세요."),

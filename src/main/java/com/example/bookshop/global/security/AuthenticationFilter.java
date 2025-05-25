@@ -8,17 +8,21 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationFilter extends OncePerRequestFilter {
 
 
@@ -27,8 +31,24 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
 
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
+
+    private static final Set<String> WHITELIST = Set.of(
+            "/api/user/login",
+            "/api/auth/**"
+    );
+
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+
+        String uri = request.getRequestURI();
+
+        if (isWhitelisted(uri)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         String token = resolvedTokenFromRequest(request);
 
@@ -38,6 +58,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             if (tokenProvider.validateToken(token)) {
 
                 Authentication authentication = tokenProvider.getAuthentication(token);
+                log.info("인증 객체 principal: {}", authentication.getPrincipal());
 
                 if (authentication != null) {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -60,7 +81,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
         if (!ObjectUtils.isEmpty(token) && token.startsWith(TOKEN_PREFIX)) {
 
-            return token.substring(TOKEN_PREFIX.length());
+            return token.substring(TOKEN_PREFIX.length()).trim();
         }
 
         return null;
@@ -68,7 +89,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     private void handleAccessDenied(HttpServletResponse response, String message) throws IOException {
 
-        response.setContentType("application/json");
+        response.setContentType("application/json;charset=UTF-8");
+
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -83,4 +105,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         response.getWriter().write(errorMessage);
     }
 
+    private boolean isWhitelisted(String uri) {
+        return WHITELIST.stream()
+                .anyMatch(pattern -> pathMatcher.match(pattern, uri));
+    }
 }

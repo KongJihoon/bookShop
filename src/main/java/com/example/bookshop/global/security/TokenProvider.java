@@ -5,6 +5,7 @@ import com.example.bookshop.global.service.RedisService;
 import com.example.bookshop.user.service.UserService;
 import com.example.bookshop.user.type.UserType;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -47,9 +48,9 @@ public class TokenProvider {
     // JWT 서명용 Key를 애플리케이션 시작 시 단 한 번만 초기화
     @PostConstruct
     public void init() {
-        key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
-
 
 
     // 로그인 시 사용할 AccessToken 생성 (사용자 정보 + 30분 유효)
@@ -98,9 +99,11 @@ public class TokenProvider {
     }
 
 
-    private Claims parseToken(String token) {
+    public Claims parseToken(String token) {
 
         try {
+
+            log.info("토큰 파싱 완료");
 
             return Jwts.parserBuilder()
                     .setSigningKey(key)
@@ -109,6 +112,9 @@ public class TokenProvider {
                     .getBody();
 
         } catch (ExpiredJwtException e) {
+
+            log.error("토큰 파싱 오류");
+
             return e.getClaims();
         }
 
