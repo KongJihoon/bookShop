@@ -44,9 +44,8 @@ public class LoginDto {
 
         private String userType;
 
-        private String refreshToken;
 
-        public static Response fromDto(UserDto userDto, String refreshToken) {
+        public static Response fromDto(UserDto userDto ) {
 
             return Response.builder()
                     .loginId(userDto.getLoginId())
@@ -56,7 +55,6 @@ public class LoginDto {
                     .address(userDto.getAddress())
                     .nickname(userDto.getNickname())
                     .userType(userDto.getUserType())
-                    .refreshToken(refreshToken)
                     .build();
 
         }
