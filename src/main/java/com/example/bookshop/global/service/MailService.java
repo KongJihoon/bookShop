@@ -35,6 +35,8 @@ public class MailService {
 
     public CheckDto sendAuthMail(String email) {
 
+
+
         String code = createRandomMail();
 
 
@@ -44,6 +46,13 @@ public class MailService {
 
         if (!userRepository.existsByEmail(email)) {
             throw new CustomException(EMAIL_NOT_FOUND);
+        }
+
+        UserEntity userEntity = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(EMAIL_NOT_FOUND));
+
+        if (userEntity.isEmailAuth()) {
+            throw new CustomException(ALREADY_EMAIL_VERIFIED);
         }
 
         try {

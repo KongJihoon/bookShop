@@ -199,6 +199,10 @@ public class TokenProvider {
     // RefreshToken 갱신 시 검증
     public void validateRefreshToken(String refreshToken) {
 
+        if (refreshToken == null) {
+            throw new CustomException(NOT_FOUND_TOKEN);
+        }
+
         Claims claims = parseToken(refreshToken);
 
         if (claims.getExpiration().before(new Date())) {

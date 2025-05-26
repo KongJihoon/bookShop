@@ -2,6 +2,7 @@ package com.example.bookshop.global.config;
 
 
 import com.example.bookshop.global.security.AuthenticationFilter;
+import com.example.bookshop.global.security.JwtExceptionFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,7 @@ public class SecurityConfig {
 
     private final AuthenticationFilter authenticationFilter;
 
+    private final JwtExceptionFilter jwtExceptionFilter;
 
 
 
@@ -34,7 +36,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/user/**","/api/auth/login").permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtExceptionFilter, AuthenticationFilter.class);
         return httpSecurity.build();
     }
 

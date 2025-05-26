@@ -87,13 +87,12 @@ public class AuthServiceImpl implements AuthService {
      * 토큰 재발급
      */
     @Override
-    public TokenDto reIssueToken(String loginId, HttpServletRequest request) {
+    public TokenDto reIssueToken(String loginId, String accessToken, String refreshToken) {
 
         log.info("토큰 재발급 시작");
 
 
         // 1. RefreshToken 안의 로그인 아이디 추출 후 아이디 검증
-        String refreshToken = request.getHeader("Refresh-Token");
 
         if (refreshToken.isBlank()) {
             throw new CustomException(NOT_FOUND_TOKEN);
@@ -112,8 +111,12 @@ public class AuthServiceImpl implements AuthService {
         UserEntity userEntity = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
+        tokenProvider.validateRefreshToken(refreshToken);
 
-        if (!redisService.getData("refresh_token:" + loginId).equals(refreshToken)) {
+
+        String redisToken = redisService.getData("refresh_token:" + loginId);
+
+        if (redisToken == null || !redisToken.equals(refreshToken)) {
 
             throw new CustomException(INVALID_TOKEN);
         }
@@ -121,7 +124,6 @@ public class AuthServiceImpl implements AuthService {
 
 
 
-        tokenProvider.validateRefreshToken(refreshToken);
 
         redisService.deleteData("refresh_token:" + loginId);
 

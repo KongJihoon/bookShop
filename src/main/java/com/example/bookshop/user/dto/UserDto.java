@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
@@ -17,8 +18,6 @@ public class UserDto {
     private Long userId;
 
     private String loginId;
-
-    private String password;
 
     private String email;
 
@@ -32,18 +31,23 @@ public class UserDto {
 
     private String userType;
 
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
     public static UserDto fromEntity(UserEntity userEntity) {
 
         return UserDto.builder()
                 .userId(userEntity.getUserId())
                 .loginId(userEntity.getLoginId())
-                .password(userEntity.getPassword())
                 .email(userEntity.getEmail())
                 .birth(userEntity.getBirth())
                 .phone(userEntity.getPhone())
                 .address(userEntity.getAddress())
                 .nickname(userEntity.getNickname())
                 .userType(String.valueOf(userEntity.getUserType()))
+                .createdAt(userEntity.getCreatedAt())
+                .updatedAt(userEntity.getUpdatedAt())
                 .build();
     }
 

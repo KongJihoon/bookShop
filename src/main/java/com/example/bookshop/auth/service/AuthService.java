@@ -12,5 +12,5 @@ public interface AuthService {
 
     TokenDto getToken(UserDto userDto);
 
-    TokenDto reIssueToken(String loginId, HttpServletRequest request);
+    TokenDto reIssueToken(String loginId, String accessToken, String refreshToken);
 }
