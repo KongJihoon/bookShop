@@ -194,6 +194,46 @@ class UserServiceImplTest {
         assertTrue(ttl > 0 && ttl <= 3600000); // 1시간 이내
     }
 
+    @Test
+    void reIssueToken() {
+        // given
+
+        UserDto userDto = authService.LoginUser("testuser", "1111@11");
+        TokenDto token = authService.getToken(userDto);
+
+
+
+        // when
+
+        TokenDto reIssuedToken = authService.reIssueToken(userDto.getLoginId(), token.getAccessToken(), token.getRefreshToken());
+
+
+        // then
+
+        assertNotNull(reIssuedToken.getAccessToken());
+        assertNotNull(reIssuedToken.getRefreshToken());
+
+        assertEquals(redisService.getData("refresh_token:" + userDto.getLoginId()), reIssuedToken.getRefreshToken());
+
+    }
+
+    @Test
+    @DisplayName("토큰 갱신 예외 테스트")
+    void reIssueTokenWithException() {
+        // given
+        UserDto userDto = authService.LoginUser("testuser", "1111@11");
+        TokenDto token = authService.getToken(userDto);
+
+        // Redis에 저장된 토큰 제거
+        redisService.deleteData("refresh_token:" + userDto.getLoginId());
+
+        // when & then
+        assertThrows(CustomException.class, () -> {
+            authService.reIssueToken(userDto.getLoginId(), token.getAccessToken(), token.getRefreshToken());
+        });
+
+    }
+
 
 
 

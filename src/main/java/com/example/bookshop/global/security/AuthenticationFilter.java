@@ -34,8 +34,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     private static final Set<String> WHITELIST = Set.of(
-            "/api/user/login",
-            "/api/auth/**"
+            "/api/auth/login",
+            "/api/user/signup",
+            "/api/user/check-email",
+            "/api/user/send-mail",
+            "/api/user/check-auth-code"
     );
 
 

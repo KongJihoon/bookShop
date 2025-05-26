@@ -2,6 +2,7 @@ package com.example.bookshop.user.entity;
 
 
 import com.example.bookshop.global.entity.BaseEntity;
+import com.example.bookshop.user.dto.EditUserInfo;
 import com.example.bookshop.user.type.UserType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -51,12 +52,19 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private UserType userType;
 
-    @Builder.Default
+
     private boolean emailAuth = false;
 
 
     public void setEmailAuth() {
         this.emailAuth = true;
+    }
+
+    public void updateUserInfo(EditUserInfo dto) {
+        if (dto.getNickname() != null) this.nickname = dto.getNickname();
+        if (dto.getEmail() != null) this.email = dto.getEmail();
+        if (dto.getPhone() != null) this.phone = dto.getPhone();
+        if (dto.getAddress() != null) this.address = dto.getAddress();
     }
 
 
