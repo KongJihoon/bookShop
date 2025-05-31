@@ -1,6 +1,11 @@
 package com.example.bookshop.global.security;
 
 import com.example.bookshop.global.exception.CustomException;
+import com.example.bookshop.global.exception.ErrorCode;
+import com.example.bookshop.global.service.RedisService;
+import com.example.bookshop.user.entity.UserEntity;
+import com.example.bookshop.user.repository.UserRepository;
+import com.example.bookshop.user.type.UserState;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -30,6 +35,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     public static final String TOKEN_PREFIX = "Bearer ";
 
     private final TokenProvider tokenProvider;
+    private final RedisService redisService;
+    private final UserRepository userRepository;
 
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
@@ -55,8 +62,17 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
         String token = resolvedTokenFromRequest(request);
 
+        if (token != null && redisService.getData("logoutUser:" + token) != null) {
+            log.warn("로그아웃 유저 접근: {}", token);
+            handleAccessDenied(response, "로그아웃 유저");
+            return;
+
+        }
+
+
 
         try {
+
 
             if (tokenProvider.validateToken(token)) {
 
@@ -68,12 +84,22 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                 }
             }
 
+            String loginId = tokenProvider.getUsernameFromToken(token);
+
+            UserEntity userEntity = userRepository.findByLoginId(loginId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+
+            if (userEntity.getUserState() == UserState.WITHDRAW) {
+                throw new CustomException(ErrorCode.WITHDRAW_USER);
+            }
+
             filterChain.doFilter(request, response);
+
 
         } catch (JwtException | CustomException e) {
             handleAccessDenied(response, e.getMessage());
         }
-
 
     }
 

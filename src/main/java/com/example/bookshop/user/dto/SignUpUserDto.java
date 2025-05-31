@@ -1,6 +1,7 @@
 package com.example.bookshop.user.dto;
 
 import com.example.bookshop.user.entity.UserEntity;
+import com.example.bookshop.user.type.UserState;
 import com.example.bookshop.user.type.UserType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Email;
@@ -63,6 +64,7 @@ public class SignUpUserDto {
                     .phone(request.phone)
                     .address(request.address)
                     .userType(UserType.USER)
+                    .userState(UserState.REQUEST)
                     .build();
 
         }
@@ -89,6 +91,8 @@ public class SignUpUserDto {
 
         private String userType;
 
+        private String userState;
+
         public static Response fromDto(UserDto userDto) {
 
             return Response.builder()
@@ -99,6 +103,7 @@ public class SignUpUserDto {
                     .address(userDto.getAddress())
                     .nickname(userDto.getNickname())
                     .userType(String.valueOf(userDto.getUserType()))
+                    .userState(String.valueOf(userDto.getUserState()))
                     .build();
         }
 

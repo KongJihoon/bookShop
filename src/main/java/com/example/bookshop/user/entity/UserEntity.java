@@ -3,6 +3,7 @@ package com.example.bookshop.user.entity;
 
 import com.example.bookshop.global.entity.BaseEntity;
 import com.example.bookshop.user.dto.EditUserInfo;
+import com.example.bookshop.user.type.UserState;
 import com.example.bookshop.user.type.UserType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -51,6 +53,12 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserType userType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserState userState;
+
+    private LocalDateTime deletedAt;
 
 
     private boolean emailAuth = false;

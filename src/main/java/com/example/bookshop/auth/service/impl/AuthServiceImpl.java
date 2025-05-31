@@ -2,14 +2,15 @@ package com.example.bookshop.auth.service.impl;
 
 import com.example.bookshop.auth.dto.TokenDto;
 import com.example.bookshop.auth.service.AuthService;
+import com.example.bookshop.global.dto.CheckDto;
 import com.example.bookshop.global.exception.CustomException;
 import com.example.bookshop.global.security.TokenProvider;
 import com.example.bookshop.global.service.RedisService;
 import com.example.bookshop.user.dto.UserDto;
 import com.example.bookshop.user.entity.UserEntity;
 import com.example.bookshop.user.repository.UserRepository;
+import com.example.bookshop.user.type.UserState;
 import com.example.bookshop.user.type.UserType;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,6 +31,8 @@ public class AuthServiceImpl implements AuthService {
     private final TokenProvider tokenProvider;
 
     private final RedisService redisService;
+
+
 
     /**
      * 유저 로그인
@@ -55,6 +58,11 @@ public class AuthServiceImpl implements AuthService {
             log.warn("[로그인 실패] 이메일 인증 에러: {}", loginId);
             throw new CustomException(PROCEED_EMAIL_AUTH);
         }
+
+        if (user.getUserState() == UserState.WITHDRAW) {
+            throw new CustomException(WITHDRAW_USER);
+        }
+
 
 
         log.info("[로그인 성공] loginId: {}", loginId);
@@ -87,6 +95,7 @@ public class AuthServiceImpl implements AuthService {
      * 토큰 재발급
      */
     @Override
+    @Transactional
     public TokenDto reIssueToken(String loginId, String accessToken, String refreshToken) {
 
         log.info("토큰 재발급 시작");
@@ -134,4 +143,29 @@ public class AuthServiceImpl implements AuthService {
 
 
     }
+
+
+    /**
+     * 유저 로그아웃
+     */
+    @Override
+    @Transactional
+    public CheckDto logout(String loginId, String accessToken) {
+
+
+        if (accessToken == null) {
+            throw new CustomException(NOT_FOUND_TOKEN);
+        }
+
+        redisService.setDataExpireMillis("logoutUser:" + loginId, accessToken, tokenProvider.getRemainExpireTime(accessToken));
+
+        redisService.deleteData("refresh_token:" + loginId);
+
+        log.info("[로그아웃] loginId: {}, token: {}", loginId, accessToken);
+
+        return new CheckDto(true, "로그아웃 완료");
+        
+    }
+
+
 }

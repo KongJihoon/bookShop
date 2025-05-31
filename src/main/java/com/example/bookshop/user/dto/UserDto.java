@@ -31,6 +31,8 @@ public class UserDto {
 
     private String userType;
 
+    private String userState;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

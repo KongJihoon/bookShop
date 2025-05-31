@@ -9,6 +9,7 @@ import com.example.bookshop.user.dto.UserDto;
 import com.example.bookshop.user.entity.UserEntity;
 import com.example.bookshop.user.repository.UserRepository;
 import com.example.bookshop.user.service.UserService;
+import com.example.bookshop.user.type.UserState;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +17,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 import static com.example.bookshop.global.exception.ErrorCode.*;
 
@@ -88,6 +91,24 @@ public class UserServiceImpl implements UserService {
         UserDto userDto = UserDto.fromEntity(userEntity);
 
         return ResultDto.of("사용자 정보를 변경하였습니다.", userDto);
+    }
+
+    @Override
+    public CheckDto deleteUser(String loginId, String password) {
+
+        UserEntity userEntity = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(password, userEntity.getPassword())) {
+            throw new CustomException(PASSWORD_MISMATCH);
+        }
+
+        userEntity.setUserState(UserState.WITHDRAW);
+        userEntity.setDeletedAt(LocalDateTime.now());
+
+        userRepository.save(userEntity);
+
+        return new CheckDto(true, "회원 탈퇴에 성공하였습니다.");
     }
 
     private void validationUserInfo(SignUpUserDto.Request request) {
