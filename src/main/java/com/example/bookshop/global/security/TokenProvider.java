@@ -8,6 +8,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -30,6 +32,9 @@ public class TokenProvider {
 
     private final RedisService redisService;
     private final UserService userService;
+
+    public static final String TOKEN_HEADER = "Authorization";
+    public static final String TOKEN_PREFIX = "Bearer ";
     
     
     
@@ -199,6 +204,10 @@ public class TokenProvider {
     // RefreshToken 갱신 시 검증
     public void validateRefreshToken(String refreshToken) {
 
+        if (refreshToken == null) {
+            throw new CustomException(NOT_FOUND_TOKEN);
+        }
+
         Claims claims = parseToken(refreshToken);
 
         if (claims.getExpiration().before(new Date())) {
@@ -207,5 +216,18 @@ public class TokenProvider {
 
     }
 
+
+    public String extractToken(HttpServletRequest request) {
+        String token = request.getHeader(TOKEN_HEADER);
+        if (!ObjectUtils.isEmpty(token) && token.startsWith(TOKEN_PREFIX)) {
+            return token.substring(TOKEN_PREFIX.length());
+        }
+        return null;
+    }
+
+    public long getRemainExpireTime(String token) {
+
+        return parseToken(token).getExpiration().getTime() - System.currentTimeMillis();
+    }
 
 }

@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
 
 import static com.example.bookshop.global.exception.ErrorCode.EXISTS_BY_EMAIL;
+import static com.example.bookshop.global.exception.ErrorCode.USER_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -192,6 +193,83 @@ class UserServiceImplTest {
         String key = "refresh_token:" + userDto.getLoginId();
         Long ttl = redisService.getExpire(key, TimeUnit.MILLISECONDS);
         assertTrue(ttl > 0 && ttl <= 3600000); // 1시간 이내
+    }
+
+    @Test
+    void reIssueToken() {
+        // given
+
+        UserDto userDto = authService.LoginUser("testuser", "1111@11");
+        TokenDto token = authService.getToken(userDto);
+
+
+
+        // when
+
+        TokenDto reIssuedToken = authService.reIssueToken(userDto.getLoginId(), token.getAccessToken(), token.getRefreshToken());
+
+
+        // then
+
+        assertNotNull(reIssuedToken.getAccessToken());
+        assertNotNull(reIssuedToken.getRefreshToken());
+
+        assertEquals(redisService.getData("refresh_token:" + userDto.getLoginId()), reIssuedToken.getRefreshToken());
+
+    }
+
+    @Test
+    @DisplayName("토큰 갱신 예외 테스트")
+    void reIssueTokenWithException() {
+        // given
+        UserDto userDto = authService.LoginUser("testuser", "1111@11");
+        TokenDto token = authService.getToken(userDto);
+
+        // Redis에 저장된 토큰 제거
+        redisService.deleteData("refresh_token:" + userDto.getLoginId());
+
+        // when & then
+        assertThrows(CustomException.class, () -> {
+            authService.reIssueToken(userDto.getLoginId(), token.getAccessToken(), token.getRefreshToken());
+        });
+
+    }
+
+    @Test
+    @DisplayName("로그아웃 테스트")
+    void withDrawUser() {
+        // given
+
+        UserDto userDto = authService.LoginUser("testuser", "1111@11");
+        TokenDto token = authService.getToken(userDto);
+
+        UserEntity userEntity = userRepository.findByLoginId(userDto.getLoginId())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+
+
+        // when
+
+        CheckDto logout = authService.logout(userEntity.getLoginId(), token.getAccessToken());
+
+        // then
+
+        String logoutToken = redisService.getData("logoutUser:" + userEntity.getLoginId());
+
+        assertEquals(token.getAccessToken(), logoutToken);
+
+    }
+
+    @Test
+    @DisplayName("accessToken이 null이면 예외 발생")
+    void logoutFailWhenAccessTokenNull() {
+        // given
+        String loginId = "testuser";
+
+        // when & then
+        assertThrows(CustomException.class, () -> {
+            authService.logout(loginId, null);
+        });
     }
 
 
