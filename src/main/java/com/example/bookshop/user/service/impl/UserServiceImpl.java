@@ -103,6 +103,10 @@ public class UserServiceImpl implements UserService {
             throw new CustomException(PASSWORD_MISMATCH);
         }
 
+        if (userEntity.getUserState() == UserState.WITHDRAW) {
+            throw new CustomException(ALREADY_DELETE_USER);
+        }
+
         userEntity.setUserState(UserState.WITHDRAW);
         userEntity.setDeletedAt(LocalDateTime.now());
 

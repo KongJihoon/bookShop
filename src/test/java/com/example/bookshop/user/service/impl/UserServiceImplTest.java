@@ -13,6 +13,7 @@ import com.example.bookshop.user.dto.UserDto;
 import com.example.bookshop.user.entity.UserEntity;
 import com.example.bookshop.user.repository.UserRepository;
 import com.example.bookshop.user.service.UserService;
+import com.example.bookshop.user.type.UserState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -261,7 +262,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    @DisplayName("accessToken이 null이면 예외 발생")
+    @DisplayName("accessToken null")
     void logoutFailWhenAccessTokenNull() {
         // given
         String loginId = "testuser";
@@ -270,6 +271,27 @@ class UserServiceImplTest {
         assertThrows(CustomException.class, () -> {
             authService.logout(loginId, null);
         });
+    }
+
+    @Test
+    @DisplayName("유저 회원 탈퇴 테스트")
+    void deleteUser_unitTest() {
+        // given
+        String loginId = "testuser";
+        String rawPassword = "1111@11";
+
+
+
+        // when
+        CheckDto result = userService.deleteUser(loginId, rawPassword);
+
+        // then
+        assertTrue(result.isSuccess());
+        assertEquals("회원 탈퇴에 성공하였습니다.", result.getMessage());
+
+        UserEntity deleted = userRepository.findByLoginId(loginId).orElseThrow();
+        assertEquals(UserState.WITHDRAW, deleted.getUserState());
+        assertNotNull(deleted.getDeletedAt());
     }
 
 

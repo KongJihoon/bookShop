@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -62,6 +61,25 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    protected ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
+
+        log.error("IllegalArgumentException 발생 : {}", e.getMessage());
+
+        return new ResponseEntity<>(
+                ErrorResponse.of(ErrorCode.INVALID_INPUT),
+                ErrorCode.INVALID_INPUT.getStatus()
+        );
+    }
+
+    @ExceptionHandler(Exception.class)
+    protected ResponseEntity<ErrorResponse> handleUnexpectedException(Exception e) {
+        log.error("내부 서버 예외 발생 : {}", e.getMessage());
+        return new ResponseEntity<>(
+                ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR),
+                ErrorCode.INTERNAL_SERVER_ERROR.getStatus()
+        );
+    }
     private static ErrorCode map(String validationCode) {
         return CODE_MAP.getOrDefault(validationCode, ErrorCode.INVALID_INPUT);
     }
