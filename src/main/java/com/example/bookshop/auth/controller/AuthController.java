@@ -70,7 +70,7 @@ public class AuthController {
             throw new CustomException(ErrorCode.NOT_FOUND_TOKEN);
         }
 
-        TokenDto tokenDto = authService.reIssueToken(userEntity.getLoginId(), request);
+        TokenDto tokenDto = authService.reIssueToken(userEntity.getLoginId(), accessToken, refreshToken);
 
         HttpHeaders headers = new HttpHeaders();
 

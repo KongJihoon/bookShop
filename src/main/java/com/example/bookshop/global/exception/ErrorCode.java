@@ -30,6 +30,7 @@ public enum ErrorCode {
     EMAIL_NOT_FOUND(HttpStatus.BAD_REQUEST, "이메일을 찾을 수 없습니다."),
     INVALID_AUTH_CODE(HttpStatus.BAD_REQUEST, "유효하지 않은 인증번호입니다."),
     PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST, "비밀번호와 비밀번호 확인이 일치하지 않습니다."),
+    ALREADY_EMAIL_VERIFIED(HttpStatus.BAD_REQUEST, "이미 인증이 완료된 이메일입니다."),
     PROCEED_EMAIL_AUTH(HttpStatus.BAD_REQUEST, "이메일 인증을 진행해주세요.");
 
 
