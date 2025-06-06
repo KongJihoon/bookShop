@@ -18,4 +18,6 @@ public interface UserService extends UserDetailsService {
     UserDto getUserInfo(Long userId);
 
     ResultDto<UserDto> editUserInfo(Long userId, EditUserInfo editUserInfo);
+
+    CheckDto deleteUser(String loginId, String password);
 }

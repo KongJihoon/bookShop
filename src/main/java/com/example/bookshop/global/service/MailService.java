@@ -5,6 +5,7 @@ import com.example.bookshop.global.exception.CustomException;
 import com.example.bookshop.global.exception.ErrorCode;
 import com.example.bookshop.user.entity.UserEntity;
 import com.example.bookshop.user.repository.UserRepository;
+import com.example.bookshop.user.type.UserState;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -78,6 +79,7 @@ public class MailService {
 
             javaMailSender.send(mimeMessage);
             redisService.setDataExpireMinutes(EMAIL_PREFIX + email, code, EMAIL_TOKEN_EXPIRE);
+            userEntity.setUserState(UserState.ACTIVE);
 
         } catch (MessagingException e) {
 

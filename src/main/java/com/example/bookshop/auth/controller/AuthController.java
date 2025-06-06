@@ -19,10 +19,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -82,6 +79,21 @@ public class AuthController {
                 .body(CheckDto.builder()
                         .success(true)
                         .message("토큰을 갱신하였습니다.").build());
+    }
+
+
+    @PatchMapping
+    @PreAuthorize("hasAnyRole('USER')")
+    public ResponseEntity<CheckDto> logoutUser(HttpServletRequest request, @AuthenticationPrincipal UserEntity userEntity) {
+
+        String accessToken = request.getHeader("Authorization");
+        if (accessToken != null && accessToken.startsWith("Bearer ")) {
+            accessToken = accessToken.substring(7); // "Bearer " 제거
+        }
+        CheckDto logout = authService.logout(userEntity.getLoginId(), accessToken);
+
+
+        return ResponseEntity.ok(logout);
     }
 
 }

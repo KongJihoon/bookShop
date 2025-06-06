@@ -88,4 +88,14 @@ public class UserController {
         return ResponseEntity.ok(userDtoResultDto);
     }
 
+    @PatchMapping()
+    @PreAuthorize("hasAnyRole('USER')")
+    public ResponseEntity<CheckDto> deleteUser(
+            @RequestBody DeleteUserDto deleteUserDto
+    ) {
+
+
+        return ResponseEntity.ok(userService.deleteUser(deleteUserDto.getLoginId(), deleteUserDto.getPassword()));
+    }
+
 }
