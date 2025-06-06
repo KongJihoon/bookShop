@@ -278,7 +278,7 @@ class UserServiceImplTest {
     void deleteUser_unitTest() {
         // given
         String loginId = "testuser";
-        String rawPassword = "1111@11";
+        String rawPassword = "테스트 비밀번호";
 
 
 
