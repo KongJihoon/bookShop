@@ -45,7 +45,10 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             "/api/user/signup",
             "/api/user/check-email",
             "/api/user/send-mail",
-            "/api/user/check-auth-code"
+            "/api/user/check-auth-code",
+            "/api/book/detail/**",
+            "/api/book/search",
+            "/api/book/search/category/**"
     );
 
 

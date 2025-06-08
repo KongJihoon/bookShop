@@ -34,6 +34,7 @@ public class SecurityConfig {
                 .csrf(CsrfConfigurer::disable) // 전체적으로 CSRF 비활성화
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/user/**","/api/auth/login").permitAll()
+                        .requestMatchers("/api/book/detail/**", "api/book/search/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)

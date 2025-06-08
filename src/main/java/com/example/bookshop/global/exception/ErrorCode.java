@@ -39,6 +39,7 @@ public enum ErrorCode {
 
     // book
     ALREADY_CREATE_BOOK(HttpStatus.BAD_REQUEST, "이미 등록된 책입니다."),
+    NOT_FOUND_BOOK(HttpStatus.BAD_REQUEST, "도서를 찾을 수 없습니다."),
     IMAGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "이미지를 찾을 수 없습니다."),
     IMAGE_UPLOAD_FAIL(HttpStatus.INTERNAL_SERVER_ERROR,"이미지 업로드에 실패했습니다."),
 
