@@ -47,10 +47,11 @@ public class CreateBookDto {
 
         private List<BookImageDto> imagesPath;
 
-        private UserEntity userEntity;
+        private List<Long> categoryIds;
 
 
         public static BookEntity toEntity(Request request) {
+
 
 
             BookEntity bookEntity = BookEntity.builder()
@@ -61,7 +62,6 @@ public class CreateBookDto {
                     .price(request.getPrice())
                     .quantity(request.getQuantity())
                     .thumbnailImagePath(request.getThumbnailImagePath())
-                    .userEntity(request.getUserEntity())
                     .build();
 
             List<BookImageEntity> imagesPaths = request.getImagesPath().stream()
@@ -97,15 +97,15 @@ public class CreateBookDto {
 
         private List<BookImageDto> imagePath;
 
+        private List<Long> categoryIds;
+
         private LocalDateTime createdAt;
 
         private LocalDateTime updatedAt;
 
         public static Response fromDto(BookDto bookDto) {
 
-            List<BookImageDto> imagesPaths = bookDto.getImagesPath().stream()
-                    .map(BookImageDto::fromEntity)
-                    .toList();
+
 
 
             return Response.builder()
@@ -116,7 +116,8 @@ public class CreateBookDto {
                     .price(bookDto.getPrice())
                     .quantity(bookDto.getQuantity())
                     .thumbnailImagePath(bookDto.getThumbnailImagePath())
-                    .imagePath(imagesPaths)
+                    .imagePath(bookDto.getImagesPath())
+                    .categoryIds(bookDto.getCategoryIds())
                     .createdAt(bookDto.getCreatedAt())
                     .updatedAt(bookDto.getUpdatedAt())
                     .build();

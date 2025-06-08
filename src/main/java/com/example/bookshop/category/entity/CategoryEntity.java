@@ -31,7 +31,7 @@ public class CategoryEntity {
     private List<CategoryEntity> children = new ArrayList<>();
 
     @OneToMany(mappedBy = "categoryEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductCategory> productCategories = new ArrayList<>();
+    private List<BookCategory> productCategories = new ArrayList<>();
 
 
     /**

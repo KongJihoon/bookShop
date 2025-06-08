@@ -3,16 +3,16 @@ package com.example.bookshop.category.entity;
 import com.example.bookshop.book.entity.BookEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.awt.print.Book;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductCategory {
+@Builder
+public class BookCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
