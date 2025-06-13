@@ -1,6 +1,7 @@
 package com.example.bookshop.book.entity;
 
 
+import com.example.bookshop.book.type.BookStatus;
 import com.example.bookshop.category.entity.BookCategory;
 import com.example.bookshop.global.entity.BaseEntity;
 import com.example.bookshop.user.entity.UserEntity;
@@ -44,6 +45,11 @@ public class BookEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookImageEntity> imagesPath;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private BookStatus bookStatus;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

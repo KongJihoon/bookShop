@@ -30,6 +30,8 @@ public class QBookEntity extends EntityPathBase<BookEntity> {
 
     public final NumberPath<Long> bookId = createNumber("bookId", Long.class);
 
+    public final EnumPath<com.example.bookshop.book.type.BookStatus> bookStatus = createEnum("bookStatus", com.example.bookshop.book.type.BookStatus.class);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 

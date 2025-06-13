@@ -4,6 +4,7 @@ package com.example.bookshop.book.repository;
 import com.example.bookshop.book.dto.BookDto;
 import com.example.bookshop.book.entity.BookEntity;
 import com.example.bookshop.book.entity.QBookEntity;
+import com.example.bookshop.book.type.BookStatus;
 import com.example.bookshop.category.entity.QBookCategory;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -17,6 +18,8 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.example.bookshop.book.type.BookStatus.AVAILABLE;
 
 @Repository
 @RequiredArgsConstructor
@@ -69,7 +72,8 @@ public class BookQueryRepository {
                 .from(qBookEntity)
                 .join(qBookEntity.bookCategories, qBookCategory)
                 .fetchJoin()
-                .where(qBookCategory.categoryEntity.categoryId.eq(categoryId))
+                .where(qBookCategory.categoryEntity.categoryId.eq(categoryId)
+                        .and(qBookEntity.bookStatus.eq(AVAILABLE)))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(qBookEntity.createdAt.desc())
@@ -95,12 +99,15 @@ public class BookQueryRepository {
         // 동적 where 조건 구성
         BooleanBuilder builder = new BooleanBuilder();
 
+        builder.and(qBookEntity.bookStatus.eq(AVAILABLE));
 
         if (StringUtils.hasText(keyword)) {
 
             builder.or(qBookEntity.title.containsIgnoreCase(keyword));
             builder.or(qBookEntity.author.containsIgnoreCase(keyword));
             builder.or(qBookEntity.publisher.containsIgnoreCase(keyword));
+
+
 
         }
         return builder;

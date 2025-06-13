@@ -33,6 +33,8 @@ public class BookDto {
 
     private Integer quantity;
 
+    private String bookStatus;
+
     private String thumbnailImagePath;
 
     private List<BookImageDto> imagesPath;
@@ -66,6 +68,7 @@ public class BookDto {
                 .details(bookEntity.getDetails())
                 .price(bookEntity.getPrice())
                 .quantity(bookEntity.getQuantity())
+                .bookStatus(String.valueOf(bookEntity.getBookStatus()))
                 .thumbnailImagePath(bookEntity.getThumbnailImagePath())
                 .imagesPath(imagePaths)
                 .userId(bookEntity.getUserEntity().getUserId())

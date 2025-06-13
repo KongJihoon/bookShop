@@ -2,6 +2,7 @@ package com.example.bookshop.book.controller;
 
 import com.example.bookshop.book.dto.BookDto;
 import com.example.bookshop.book.dto.CreateBookDto;
+import com.example.bookshop.book.dto.UpdateBookDto;
 import com.example.bookshop.book.service.BookService;
 import com.example.bookshop.global.dto.ResultDto;
 import com.example.bookshop.user.entity.UserEntity;
@@ -81,6 +82,22 @@ public class BookController {
         ResultDto<Page<BookDto>> pageResultDto = bookService.searchCategory(categoryId, pageRequest);
 
         return ResponseEntity.ok(pageResultDto);
+
+    }
+
+    @PatchMapping("/update")
+    @PreAuthorize("hasAnyRole('USER')")
+    public ResponseEntity<ResultDto<BookDto>> updateBook (
+            @RequestPart("request") UpdateBookDto request,
+            @RequestPart("thumbnail") MultipartFile thumbnailImagePath,
+            @RequestPart("images") List<MultipartFile> detailImagesPaths,
+            @AuthenticationPrincipal UserEntity userEntity
+
+    ) throws IOException {
+
+        ResultDto<BookDto> bookDtoResultDto = bookService.updateBook(request, thumbnailImagePath, detailImagesPaths, userEntity.getUserId());
+
+        return ResponseEntity.ok(bookDtoResultDto);
 
     }
 
