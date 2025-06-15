@@ -96,22 +96,22 @@ public class BookQueryRepository {
     }
 
     private static BooleanBuilder getKeywordCondition(String keyword, QBookEntity qBookEntity) {
-        // 동적 where 조건 구성
         BooleanBuilder builder = new BooleanBuilder();
 
+        // 상태 먼저
         builder.and(qBookEntity.bookStatus.eq(AVAILABLE));
 
+        // 키워드가 있으면 그 조건도 and로 묶어줌
         if (StringUtils.hasText(keyword)) {
+            BooleanBuilder keywordCondition = new BooleanBuilder();
+            keywordCondition.or(qBookEntity.title.containsIgnoreCase(keyword));
+            keywordCondition.or(qBookEntity.author.containsIgnoreCase(keyword));
+            keywordCondition.or(qBookEntity.publisher.containsIgnoreCase(keyword));
 
-            builder.or(qBookEntity.title.containsIgnoreCase(keyword));
-            builder.or(qBookEntity.author.containsIgnoreCase(keyword));
-            builder.or(qBookEntity.publisher.containsIgnoreCase(keyword));
-
-
-
+            builder.and(keywordCondition);
         }
+
         return builder;
     }
-
 
 }

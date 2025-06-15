@@ -40,7 +40,7 @@ public class BookEntity extends BaseEntity {
     @Column(nullable = false)
     private Integer quantity;
 
-    @Column(nullable = false)
+
     private String thumbnailImagePath;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
