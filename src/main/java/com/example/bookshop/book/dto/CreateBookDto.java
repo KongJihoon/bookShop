@@ -2,6 +2,7 @@ package com.example.bookshop.book.dto;
 
 import com.example.bookshop.book.entity.BookEntity;
 import com.example.bookshop.book.entity.BookImageEntity;
+import com.example.bookshop.book.type.BookStatus;
 import com.example.bookshop.user.entity.UserEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -62,6 +63,7 @@ public class CreateBookDto {
                     .price(request.getPrice())
                     .quantity(request.getQuantity())
                     .thumbnailImagePath(request.getThumbnailImagePath())
+                    .bookStatus(BookStatus.AVAILABLE)
                     .build();
 
             List<BookImageEntity> imagesPaths = request.getImagesPath().stream()
@@ -93,6 +95,8 @@ public class CreateBookDto {
 
         private Integer quantity;
 
+        private String bookStatus;
+
         private String thumbnailImagePath;
 
         private List<BookImageDto> imagePath;
@@ -115,6 +119,7 @@ public class CreateBookDto {
                     .details(bookDto.getDetails())
                     .price(bookDto.getPrice())
                     .quantity(bookDto.getQuantity())
+                    .bookStatus(bookDto.getBookStatus())
                     .thumbnailImagePath(bookDto.getThumbnailImagePath())
                     .imagePath(bookDto.getImagesPath())
                     .categoryIds(bookDto.getCategoryIds())
