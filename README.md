@@ -11,7 +11,7 @@ Spring Boot 기반의 도서 쇼핑몰 백엔드 프로젝트입니다.
 
 ---
 ## 1️⃣ ERD
-
+![](https://github.com/KongJihoon/bookShop/blob/main/docs/erd/ERD02.png?raw=true)
 
 
 ## 🛠 기술 스택
