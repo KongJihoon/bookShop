@@ -167,6 +167,7 @@ public class BookServiceImpl implements BookService {
         return ResultDto.of("도서 검색이 완료되었습니다.", result);
     }
 
+    // 카테고리 별 도서 검색
     @Override
     public ResultDto<Page<BookDto>> searchCategory(Long categoryId, Pageable pageable) {
 
@@ -203,7 +204,7 @@ public class BookServiceImpl implements BookService {
             bookEntity.setThumbnailImagePath(thumbnailFileName);
         }
 
-        deleteBookImage(request,  bookEntity);
+        deleteBookImage(request, bookEntity);
 
 
         changeBookImage(newImagesPaths, bookEntity);
@@ -238,7 +239,7 @@ public class BookServiceImpl implements BookService {
 
         return CheckDto.builder()
                 .success(true)
-                .message("도서 삭제를 완료했습니다. : {}").build();
+                .message("도서 삭제를 완료했습니다.").build();
     }
 
     private void changeBookImage(List<MultipartFile> newImagesPaths, BookEntity bookEntity) throws IOException {
