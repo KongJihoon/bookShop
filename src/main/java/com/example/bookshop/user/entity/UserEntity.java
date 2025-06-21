@@ -1,6 +1,7 @@
 package com.example.bookshop.user.entity;
 
 
+import com.example.bookshop.cart.entity.CartEntity;
 import com.example.bookshop.global.entity.BaseEntity;
 import com.example.bookshop.user.dto.EditUserInfo;
 import com.example.bookshop.user.type.UserState;
@@ -62,6 +63,9 @@ public class UserEntity extends BaseEntity implements UserDetails {
 
 
     private boolean emailAuth = false;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private CartEntity cartEntity;
 
 
     public void setEmailAuth() {

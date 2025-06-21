@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -17,6 +18,8 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
 
     private static final long serialVersionUID = 728199348L;
 
+    private static final PathInits INITS = PathInits.DIRECT2;
+
     public static final QUserEntity userEntity = new QUserEntity("userEntity");
 
     public final com.example.bookshop.global.entity.QBaseEntity _super = new com.example.bookshop.global.entity.QBaseEntity(this);
@@ -24,6 +27,8 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
     public final StringPath address = createString("address");
 
     public final DatePath<java.time.LocalDate> birth = createDate("birth", java.time.LocalDate.class);
+
+    public final com.example.bookshop.cart.entity.QCartEntity cartEntity;
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
@@ -52,15 +57,24 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
     public final EnumPath<com.example.bookshop.user.type.UserType> userType = createEnum("userType", com.example.bookshop.user.type.UserType.class);
 
     public QUserEntity(String variable) {
-        super(UserEntity.class, forVariable(variable));
+        this(UserEntity.class, forVariable(variable), INITS);
     }
 
     public QUserEntity(Path<? extends UserEntity> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QUserEntity(PathMetadata metadata) {
-        super(UserEntity.class, metadata);
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QUserEntity(PathMetadata metadata, PathInits inits) {
+        this(UserEntity.class, metadata, inits);
+    }
+
+    public QUserEntity(Class<? extends UserEntity> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.cartEntity = inits.isInitialized("cartEntity") ? new com.example.bookshop.cart.entity.QCartEntity(forProperty("cartEntity"), inits.get("cartEntity")) : null;
     }
 
 }
