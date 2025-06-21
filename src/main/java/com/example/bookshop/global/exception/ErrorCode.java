@@ -48,7 +48,11 @@ public enum ErrorCode {
 
     // category
     NOT_FOUND_CATEGORY(HttpStatus.BAD_REQUEST, "카테고리를 찾을 수 없습니다."),
-    ALREADY_EXIST_CATEGORY(HttpStatus.BAD_REQUEST, "이미 존재하는 카테고리입니다.");
+    ALREADY_EXIST_CATEGORY(HttpStatus.BAD_REQUEST, "이미 존재하는 카테고리입니다."),
+
+    // cart
+    CANNOT_ADD_TO_CART(HttpStatus.BAD_REQUEST, "장바구니에 담을 수 없는 상품입니다."),
+    CART_NOT_FOUND(HttpStatus.BAD_REQUEST, "장바구니를 찾을 수 없습니다.");
 
 
     private final HttpStatus status;

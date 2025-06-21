@@ -72,7 +72,7 @@ public class QBookEntity extends EntityPathBase<BookEntity> {
 
     public QBookEntity(Class<? extends BookEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.userEntity = inits.isInitialized("userEntity") ? new com.example.bookshop.user.entity.QUserEntity(forProperty("userEntity")) : null;
+        this.userEntity = inits.isInitialized("userEntity") ? new com.example.bookshop.user.entity.QUserEntity(forProperty("userEntity"), inits.get("userEntity")) : null;
     }
 
 }
