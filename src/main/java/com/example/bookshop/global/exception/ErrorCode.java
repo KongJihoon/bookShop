@@ -52,7 +52,9 @@ public enum ErrorCode {
 
     // cart
     CANNOT_ADD_TO_CART(HttpStatus.BAD_REQUEST, "장바구니에 담을 수 없는 상품입니다."),
-    CART_NOT_FOUND(HttpStatus.BAD_REQUEST, "장바구니를 찾을 수 없습니다.");
+    CART_NOT_FOUND(HttpStatus.BAD_REQUEST, "장바구니를 찾을 수 없습니다."),
+    INVALID_QUANTITY(HttpStatus.BAD_REQUEST, "수량을 잘못 입력하였습니다."),
+    NOT_FOUND_CART_ITEM(HttpStatus.BAD_REQUEST, "장바구니 상품을 찾을 수 없습니다.");
 
 
     private final HttpStatus status;

@@ -16,14 +16,22 @@ public class CartItemDto {
 
     private int quantity;
 
+    private int unitPrice;
+
     private int totalPrice;
 
     public static CartItemDto fromEntity(CartItem cartItem) {
 
+        int unitPrice = cartItem.getBookEntity().getPrice();
+
+        int totalPrice = cartItem.getQuantity() * unitPrice;
+
+
         return CartItemDto.builder()
                 .title(cartItem.getBookEntity().getTitle())
                 .quantity(cartItem.getQuantity())
-                .totalPrice(cartItem.getTotalPrice())
+                .unitPrice(unitPrice)
+                .totalPrice(totalPrice)
                 .build();
 
     }

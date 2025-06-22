@@ -18,8 +18,6 @@ public class CartItem {
     @Column(nullable = false)
     private int quantity;
 
-    @Column(nullable = false)
-    private int totalPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
@@ -34,7 +32,7 @@ public class CartItem {
     public CartItem(BookEntity bookEntity, int quantity, String title) {
         this.bookEntity = bookEntity;
         this.quantity = quantity;
-        this.totalPrice = bookEntity.getPrice() * quantity;
+
 
     }
 
@@ -43,11 +41,16 @@ public class CartItem {
     }
 
 
-    public void setTotalPrice(int quantity) {
+    public void addQuantity(int quantity) {
 
         this.quantity += quantity;
 
-        this.totalPrice = this.quantity * this.bookEntity.getPrice();
+
+    }
+
+    public void updateQuantity(int newQuantity) {
+
+        this.quantity = newQuantity;
     }
 
 }

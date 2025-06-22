@@ -18,13 +18,23 @@ public class CartDto {
 
     private List<CartItemDto> cartItems;
 
+    int totalPrice;
+
 
     public static CartDto fromEntity(CartEntity cartEntity) {
+
+        List<CartItemDto> itemDtos = cartEntity.getCartItems().stream()
+                .map(CartItemDto::fromEntity)
+                .toList();
+
+        int total = itemDtos.stream()
+                .mapToInt(CartItemDto::getTotalPrice)
+                .sum();
+
         return CartDto.builder()
                 .username(cartEntity.getUserEntity().getUsername())
-                .cartItems(cartEntity.getCartItems().stream()
-                        .map(CartItemDto::fromEntity)
-                        .collect(Collectors.toList()))
+                .cartItems(itemDtos)
+                .totalPrice(total)
                 .build();
     }
 

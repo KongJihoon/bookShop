@@ -48,7 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new CustomException(ErrorCode.ALREADY_EXIST_CATEGORY);
         }
 
-        /**
+        /*
          * 자식 카테고리 생성 부모 객체와 연결
          */
         CategoryEntity categoryEntity = new CategoryEntity(request.getCategoryName(), parent);
@@ -64,7 +64,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ResultDto<List<CategoryDto>> getCategoryTree() {
 
-        /**
+        /*
          * 부모객체가 없는 최상위 부모를 탐색 후 자식 객체와 함께 리스트로 반환
          */
         List<CategoryDto> categoryLists = categoryRepository.findByParentIsNull().stream()
