@@ -5,10 +5,13 @@ import com.example.bookshop.book.repository.BookRepository;
 import com.example.bookshop.book.type.BookStatus;
 import com.example.bookshop.cart.dto.AddCartDto;
 import com.example.bookshop.cart.dto.CartDto;
+import com.example.bookshop.cart.dto.UpdateCartDto;
 import com.example.bookshop.cart.entity.CartEntity;
+import com.example.bookshop.cart.entity.CartItem;
 import com.example.bookshop.cart.repository.CartItemRepository;
 import com.example.bookshop.cart.repository.CartRepository;
 import com.example.bookshop.cart.service.CartService;
+import com.example.bookshop.global.dto.CheckDto;
 import com.example.bookshop.global.dto.ResultDto;
 import com.example.bookshop.global.exception.CustomException;
 import com.example.bookshop.global.exception.ErrorCode;
@@ -33,6 +36,8 @@ public class CartServiceImpl implements CartService {
     private final UserRepository userRepository;
 
     private final BookRepository bookRepository;
+
+    private final CartItemRepository cartItemRepository;
 
     @Override
     @Transactional
@@ -74,6 +79,8 @@ public class CartServiceImpl implements CartService {
     @Override
     public ResultDto<CartDto> getCartInfo(Long userId) {
 
+        log.info("[장바구니 조회 시작] : userId = {}", userId);
+
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
@@ -82,7 +89,81 @@ public class CartServiceImpl implements CartService {
 
         CartDto cartDto = CartDto.fromEntity(cartEntity);
 
+        log.info("[장바구니 조회 완료] : userId = {}", userId);
 
         return ResultDto.of("장바구니 조회 완료.", cartDto);
+    }
+
+    @Override
+    public ResultDto<CartDto> updateCartItem(Long userId, UpdateCartDto request) {
+
+        if (request.getQuantity() <= 0) {
+            throw new CustomException(INVALID_QUANTITY);
+        }
+
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        CartEntity cartEntity = cartRepository.findByUserEntity(userEntity)
+                .orElseThrow(() -> new CustomException(CART_NOT_FOUND));
+
+        BookEntity bookEntity = bookRepository.findById(request.getBookId())
+                .orElseThrow(() -> new CustomException(NOT_FOUND_BOOK));
+
+        CartItem cartItem = cartItemRepository.findByCartEntityAndBookEntity(cartEntity, bookEntity)
+                .orElseThrow(() -> new CustomException(NOT_FOUND_CART_ITEM));
+
+        cartItem.updateQuantity(request.getQuantity());
+
+
+        CartDto cartDto = CartDto.fromEntity(cartEntity);
+
+        return ResultDto.of("장바구니 수량이 변경되었습니다.", cartDto);
+    }
+
+    @Override
+    public CheckDto deleteCartItem(Long userId, Long cartItemId) {
+
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        CartEntity cartEntity = cartRepository.findByUserEntity(userEntity)
+                .orElseThrow(() -> new CustomException(CART_NOT_FOUND));
+
+
+
+        cartEntity.removeCartItem(cartItemId);
+
+        cartRepository.save(cartEntity);
+
+
+        return CheckDto.builder()
+                .success(true)
+                .message("장바구니 개별 삭제 완료.")
+                .build();
+    }
+
+
+    public CheckDto deleteAllCartItems(Long userId, Long cartId) {
+
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        CartEntity cartEntity = cartRepository.findByUserEntity(userEntity)
+                .orElseThrow(() -> new CustomException(CART_NOT_FOUND));
+
+        if (!cartEntity.getCartId().equals(cartId)) {
+            throw new CustomException(CART_NOT_FOUND);
+        }
+
+        cartEntity.getCartItems().clear();
+
+        cartRepository.save(cartEntity);
+
+
+        return CheckDto.builder()
+                .success(true)
+                .message("장바구니 상품 전체 삭제 완료")
+                .build();
     }
 }

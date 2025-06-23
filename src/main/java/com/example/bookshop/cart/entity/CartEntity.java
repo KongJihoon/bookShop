@@ -2,6 +2,8 @@ package com.example.bookshop.cart.entity;
 
 
 import com.example.bookshop.book.entity.BookEntity;
+import com.example.bookshop.global.exception.CustomException;
+import com.example.bookshop.global.exception.ErrorCode;
 import com.example.bookshop.user.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -41,7 +43,7 @@ public class CartEntity {
 
             if (item.getBookEntity().getBookId().equals(bookEntity.getBookId())) {
 
-                item.setTotalPrice(quantity);
+                item.addQuantity(quantity);
                 return;
 
             }
@@ -56,6 +58,16 @@ public class CartEntity {
         item.setCart(this);
         cartItems.add(item);
 
+
+    }
+
+    public void removeCartItem(Long cartItemId) {
+
+        boolean removed = cartItems.removeIf(item -> item.getCartItemId().equals(cartItemId));
+
+        if (!removed) {
+            throw new CustomException(ErrorCode.NOT_FOUND_CART_ITEM);
+        }
 
     }
 
