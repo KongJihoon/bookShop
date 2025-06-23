@@ -84,7 +84,7 @@ public class CartServiceImpl implements CartService {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        CartEntity cartEntity = cartRepository.findByUserEntity(userEntity)
+        CartEntity cartEntity = cartRepository.findByUserWithItemsAndBooks(userEntity)
                 .orElseThrow(() -> new CustomException(CART_NOT_FOUND));
 
         CartDto cartDto = CartDto.fromEntity(cartEntity);
