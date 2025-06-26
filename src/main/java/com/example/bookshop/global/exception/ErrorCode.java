@@ -11,6 +11,8 @@ public enum ErrorCode {
 
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "내부 서버 오류입니다."),
 
+    // json
+
 
     // JWT
     NOT_FOUND_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 존재하지 않습니다."),
@@ -54,7 +56,15 @@ public enum ErrorCode {
     CANNOT_ADD_TO_CART(HttpStatus.BAD_REQUEST, "장바구니에 담을 수 없는 상품입니다."),
     CART_NOT_FOUND(HttpStatus.BAD_REQUEST, "장바구니를 찾을 수 없습니다."),
     INVALID_QUANTITY(HttpStatus.BAD_REQUEST, "수량을 잘못 입력하였습니다."),
-    NOT_FOUND_CART_ITEM(HttpStatus.BAD_REQUEST, "장바구니 상품을 찾을 수 없습니다.");
+    NOT_FOUND_CART_ITEM(HttpStatus.BAD_REQUEST, "장바구니 상품을 찾을 수 없습니다."),
+
+
+    // order
+    OUT_OF_STOCK(HttpStatus.BAD_REQUEST, "재고가 부족합니다.")
+
+
+
+    ;
 
 
     private final HttpStatus status;

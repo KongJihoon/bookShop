@@ -15,12 +15,15 @@ import com.example.bookshop.global.dto.CheckDto;
 import com.example.bookshop.global.dto.ResultDto;
 import com.example.bookshop.global.exception.CustomException;
 import com.example.bookshop.global.exception.ErrorCode;
+import com.example.bookshop.global.service.RedisService;
 import com.example.bookshop.user.entity.UserEntity;
 import com.example.bookshop.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Duration;
 
 import static com.example.bookshop.global.exception.ErrorCode.*;
 
@@ -38,6 +41,8 @@ public class CartServiceImpl implements CartService {
     private final BookRepository bookRepository;
 
     private final CartItemRepository cartItemRepository;
+    
+    private final RedisService redisService;
 
     @Override
     @Transactional
@@ -78,8 +83,20 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public ResultDto<CartDto> getCartInfo(Long userId) {
+        
+        
 
         log.info("[장바구니 조회 시작] : userId = {}", userId);
+
+        String redisKey = "cart:" + userId;
+
+        CartDto infoData = redisService.getInfoData(redisKey, CartDto.class);
+
+        if (infoData != null) {
+            return ResultDto.of(
+                    "장바구니 조회 완료(캐시)", infoData
+            );
+        }
 
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
@@ -89,16 +106,27 @@ public class CartServiceImpl implements CartService {
 
         CartDto cartDto = CartDto.fromEntity(cartEntity);
 
+        redisService.setInfoData(redisKey, cartDto, 3600000L);
+
         log.info("[장바구니 조회 완료] : userId = {}", userId);
 
         return ResultDto.of("장바구니 조회 완료.", cartDto);
     }
 
     @Override
+    @Transactional
     public ResultDto<CartDto> updateCartItem(Long userId, UpdateCartDto request) {
 
         if (request.getQuantity() <= 0) {
             throw new CustomException(INVALID_QUANTITY);
+        }
+
+        String redisKey = "cart:" + userId;
+
+        CartDto infoData = redisService.getInfoData(redisKey, CartDto.class);
+
+        if (infoData != null) {
+            redisService.deleteData(redisKey);
         }
 
         UserEntity userEntity = userRepository.findById(userId)
@@ -122,7 +150,17 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
     public CheckDto deleteCartItem(Long userId, Long cartItemId) {
+
+
+        String redisKey = "cart:" + userId;
+
+        CartDto infoData = redisService.getInfoData(redisKey, CartDto.class);
+
+        if (infoData != null) {
+            redisService.deleteData(redisKey);
+        }
 
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
@@ -144,6 +182,7 @@ public class CartServiceImpl implements CartService {
     }
 
 
+    @Transactional
     public CheckDto deleteAllCartItems(Long userId, Long cartId) {
 
         UserEntity userEntity = userRepository.findById(userId)
