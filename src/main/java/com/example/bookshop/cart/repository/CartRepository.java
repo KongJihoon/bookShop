@@ -12,6 +12,8 @@ import java.util.Optional;
 public interface CartRepository extends JpaRepository<CartEntity, Long> {
 
 
+    Optional<CartEntity> findByUserEntity(UserEntity userEntity);
+
     @Query("""
         select c
         from CartEntity c
@@ -20,6 +22,7 @@ public interface CartRepository extends JpaRepository<CartEntity, Long> {
         where c.userEntity = :user
 """)
     Optional<CartEntity> findByUserWithItemsAndBooks(@Param("user") UserEntity userEntity);
+
 
 
 
